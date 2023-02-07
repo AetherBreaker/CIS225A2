@@ -168,9 +168,4 @@ public class Order {
         System.out.println("Cost: " + this.cost);
     }
 
-    private void save_to_file() {
-        File orderfile = new File("order" + this.ordernumber + ".txt");
-        try (FileWriter writer = new FileWriter(orderfile)) {
-            writer.write("Order number: " + this.ordernumber);
-    }
 }
