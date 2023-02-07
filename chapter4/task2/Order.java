@@ -5,11 +5,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;import
+import java.util.HashMap;
 
 record CustomerData(
-        String lastname,
+        String uuid,
         String firstname,
+        String lastname,
         String company,
         String address,
         String city,
@@ -46,7 +47,15 @@ public class Order {
         }
     }
 
-    private static final HashMap<Design, Integer[]> PRICETABLE=new HashMap<Design,Integer[]>(){{put(Design.NATURE,new Integer[]{300,10,15,20,25,30});put(Design.TECH,new Integer[]{350,20,30,40,50,60});put(Design.BUSINESS,new Integer[]{375,30,40,50,60,70});put(Design.MUSIC,new Integer[]{400,85,95,110,130,210});put(Design.NAUGHTY,new Integer[]{500,100,200,300,400,500});}};
+    private static final HashMap<Design, Integer[]> PRICETABLE = new HashMap<Design, Integer[]>() {
+        {
+            put(Design.NATURE, new Integer[] { 300, 10, 15, 20, 25, 30 });
+            put(Design.TECH, new Integer[] { 350, 20, 30, 40, 50, 60 });
+            put(Design.BUSINESS, new Integer[] { 375, 30, 40, 50, 60, 70 });
+            put(Design.MUSIC, new Integer[] { 400, 85, 95, 110, 130, 210 });
+            put(Design.NAUGHTY, new Integer[] { 500, 100, 200, 300, 400, 500 });
+        }
+    };
     private final int ordernumber;
     private CustomerData customerdata;
     private Design design;
@@ -60,11 +69,12 @@ public class Order {
     }
 
     private void prompt_for_customer_data() {
+        String uuid = java.util.UUID.randomUUID().toString();
         System.out.println("Enter customer data:");
-        System.out.println("Last name:");
-        String lastname = System.console().readLine();
         System.out.println("First name:");
         String firstname = System.console().readLine();
+        System.out.println("Last name:");
+        String lastname = System.console().readLine();
         System.out.println("Company:");
         String company = System.console().readLine();
         System.out.println("Address:");
@@ -73,7 +83,7 @@ public class Order {
         String city = System.console().readLine();
         System.out.println("State:");
         String state = System.console().readLine();
-        int zip;
+        int zip = -1;
         boolean valid = false;
         while (!valid) {
             try {
@@ -85,7 +95,7 @@ public class Order {
                 System.out.println("Zip:");
             }
         }
-        int phone;
+        int phone = -1;
         valid = false;
         while (!valid) {
             try {
@@ -97,7 +107,7 @@ public class Order {
                 System.out.println("Phone:");
             }
         }
-        this.customerdata = new CustomerData(lastname, firstname, company, address, city, state, zip, phone);
+        this.customerdata = new CustomerData(uuid, firstname, lastname, company, address, city, state, zip, phone);
     }
 
     private void prompt_for_design_and_features() {
@@ -150,6 +160,16 @@ public class Order {
             e.printStackTrace();
             return 1;
         }
+    }
+
+    public void update_design(Design design) {
+        this.design = design;
+        this.cost = PRICETABLE.get(this.design)[0] + PRICETABLE.get(this.design)[this.featurecount];
+    }
+
+    public void update_featurecount(int featurecount) {
+        this.featurecount = featurecount;
+        this.cost = PRICETABLE.get(this.design)[0] + PRICETABLE.get(this.design)[this.featurecount];
     }
 
     public void print_order() {
